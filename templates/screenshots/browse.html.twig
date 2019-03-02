@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+
+<h1 xmlns="http://www.w3.org/1999/html">Browse your screenshots</h1>
+
+    <a href="{{ path('screenshots_take') }}" class="btn btn-primary">Take a screenshot</a>
+
+    <div class="card-group mt-4">
+        {% for screenshot in screenshots %}
+            {% if loop.index % 4 == 1 %}<div class="row mb-4">{% endif %}
+                <div class="col-sm-3">
+                    <div class="card">
+                        <a href="{{ screenshot.url }}"><img src="{{ path('screenshots_get', { 'id': screenshot.id }) }}" class="card-img-top" alt="Screenshot of {{ screenshot.url }} from {{ screenshot.createdOn|date }}"></a>
+                        <div class="card-footer">
+                            <small class="text-muted">taken on {{ screenshot.createdOn|date('d.m.Y H:i:s') }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% if loop.index % 4 == 0 %}</div>{% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}
