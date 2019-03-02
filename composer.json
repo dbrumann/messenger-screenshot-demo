@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ramsey/uuid-doctrine": "^1.5",
         "sensio/framework-extra-bundle": "^5.2",
+        "symfony/amqp-pack": "*",
         "symfony/console": "4.2.*",
         "symfony/dotenv": "4.2.*",
         "symfony/finder": "4.2.*",
