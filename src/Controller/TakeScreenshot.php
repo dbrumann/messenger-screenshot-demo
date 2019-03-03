@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Domain\Screenshot\Client;
-use App\Entity\Screenshot;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Domain\Screenshot\TakeScreenshotEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,13 +18,13 @@ class TakeScreenshot
 {
     private $twig;
     private $urlGenerator;
-    private $managerRegistry;
+    private $eventDispatcher;
 
-    public function __construct(Environment $twig, UrlGeneratorInterface $urlGenerator, ManagerRegistry $managerRegistry)
+    public function __construct(Environment $twig, UrlGeneratorInterface $urlGenerator, EventDispatcherInterface $eventDispatcher)
     {
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
-        $this->managerRegistry = $managerRegistry;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -33,11 +33,10 @@ class TakeScreenshot
     public function __invoke(Client $screenshotClient, Request $request): Response
     {
         if ($request->isMethod('post')) {
-            $screenshot = $screenshotClient->takeScreenshot($request->request->get('screenshotUrl'));
-
-            $manager = $this->managerRegistry->getManager();
-            $manager->persist(Screenshot::fromDto($screenshot));
-            $manager->flush();
+            $this->eventDispatcher->dispatch(
+                'app.take_screenshot',
+                new TakeScreenshotEvent($request->request->get('screenshotUrl'))
+            );
 
             return new RedirectResponse($this->urlGenerator->generate('screenshots_browse'));
         }
