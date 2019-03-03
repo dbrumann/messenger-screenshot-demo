@@ -41,16 +41,16 @@ class Client
 
     private function createDirectoryFromUrl(string $url): string
     {
-        $url = sprintf(
+        $directory = sprintf(
             '%s/%s',
             $this->screenshotDir,
             iconv(mb_detect_encoding($url), 'ISO-8859-1//TRANSLIT', parse_url($url, PHP_URL_HOST))
         );
         $path = parse_url($url, PHP_URL_PATH);
-        if ($path !== null) {
-            $url .= rtrim(iconv(mb_detect_encoding($url), 'ISO-8859-1//TRANSLIT', $path), '/');
+        if ($path !== null && $path !== '/') {
+            $directory .= rtrim(iconv(mb_detect_encoding($url), 'ISO-8859-1//TRANSLIT', $path), '/');
         }
 
-        return $url;
+        return $directory;
     }
 }
