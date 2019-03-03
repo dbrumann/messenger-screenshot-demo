@@ -34,7 +34,7 @@ class TakeScreenshot
     {
         if ($request->isMethod('post')) {
             $this->messageBus->dispatch(
-                new TakeScreenshotCommand($request->request->get('screenshotUrl'))
+                new TakeScreenshotCommand(...explode("\r\n", $request->request->get('urls')))
             );
 
             return new RedirectResponse($this->urlGenerator->generate('screenshots_browse'));

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Domain\Screenshot;
 
 use DateTimeImmutable;
+use Generator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Panther\Client as PantherClient;
 
@@ -15,6 +16,30 @@ class Client
     public function __construct(string $screenshotDir)
     {
         $this->screenshotDir = rtrim($screenshotDir, '/');
+    }
+
+    public function takeScreenshots(array $urls): Generator
+    {
+        $driver = PantherClient::createChromeClient();
+        foreach ($urls as $url) {
+            $screenshot = new Screenshot();
+            $screenshot->url = mb_strtolower($url);
+            $filesystem = new Filesystem();
+            if ($filesystem->exists($this->screenshotDir) === false) {
+                $filesystem->mkdir($this->screenshotDir);
+            }
+            $urlDirectory = $this->createDirectoryFromUrl($screenshot->url);
+            if ($filesystem->exists($urlDirectory) === false) {
+                $filesystem->mkdir($urlDirectory);
+            }
+            $screenshot->createdOn = (new DateTimeImmutable())->getTimestamp();
+            $screenshot->filename = sprintf('%s/%s.png', $urlDirectory, $screenshot->createdOn);
+
+            $driver->get($url)->takeScreenshot($screenshot->filename);
+
+            yield $screenshot;
+        }
+        $driver->close();
     }
 
     public function takeScreenshot(string $url): Screenshot

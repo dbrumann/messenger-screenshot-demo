@@ -20,8 +20,14 @@ class TakeScreenshotHandler implements MessageHandlerInterface
 
     public function __invoke(TakeScreenshotCommand $takeScreenshot)
     {
-        $screenshot = $this->client->takeScreenshot($takeScreenshot->getUrl());
+        $screenshotGenerator = $this->client->takeScreenshots($takeScreenshot->getUrls());
 
-        $this->messageBus->dispatch(new ScreenshotTakenEvent($screenshot));
+        while ($screenshotGenerator->valid()) {
+            $screenshot = $screenshotGenerator->current();
+
+            $this->messageBus->dispatch(new ScreenshotTakenEvent($screenshot));
+
+            $screenshotGenerator->next();
+        }
     }
 }

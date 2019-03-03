@@ -5,3 +5,8 @@ framework:
 
         routing:
             '*': amqp
+
+        buses:
+            default:
+                middleware:
+                    - 'messenger.middleware.validation'
