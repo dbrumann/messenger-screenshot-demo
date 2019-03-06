@@ -4,17 +4,29 @@ declare(strict_types = 1);
 
 namespace App\Domain\Screenshot;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class TakeScreenshotCommand
 {
-    private $url;
+    /**
+     * @Assert\All({
+     *     @Assert\Url()
+     * })
+     */
+    private $urls;
 
-    public function __construct(string $url)
+    public function __construct(string ...$urls)
     {
-        $this->url = $url;
+        $this->urls = $urls;
     }
 
-    public function getUrl(): string
+    public function setUrls(array $urls)
     {
-        return $this->url;
+        $this->urls = $urls;
+    }
+
+    public function getUrls(): array
+    {
+        return $this->urls;
     }
 }
