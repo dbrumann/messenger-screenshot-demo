@@ -47,7 +47,7 @@ class Screenshot
 
     public static function fromDto(ScreenshotDto $dto): self
     {
-        return new static($dto->url, $dto->filename, $dto->createdOn);
+        return new static($dto->url, $dto->filename, new DateTimeImmutable("@{$dto->createdOn}"));
     }
 
     public function getId(): string

@@ -29,8 +29,8 @@ class Client
         if ($filesystem->exists($urlDirectory) === false) {
             $filesystem->mkdir($urlDirectory);
         }
-        $screenshot->createdOn = new DateTimeImmutable();
-        $screenshot->filename = sprintf('%s/%s.png', $urlDirectory, $screenshot->createdOn->getTimestamp());
+        $screenshot->createdOn = (new DateTimeImmutable())->getTimestamp();
+        $screenshot->filename = sprintf('%s/%s.png', $urlDirectory, $screenshot->createdOn);
 
         $driver = PantherClient::createChromeClient();
         $driver->get($url)->takeScreenshot($screenshot->filename);

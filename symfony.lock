@@ -153,6 +153,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/amqp-pack": {
+        "version": "v1.0.12"
+    },
     "symfony/asset": {
         "version": "v4.2.3"
     },
